@@ -11,23 +11,37 @@ class NotesListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NotesCubit, NotesState>(
       builder: (context, state) {
-        List<NoteModel> notes =
-            BlocProvider.of<NotesCubit>(context).notes ?? [];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: ListView.builder(
-            itemCount: notes.length,
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
-                child: NoteItem(
-                  note: notes[index],
-                ),
-              );
-            },
-          ),
-        );
+        // استدعاء fetchAllNotes عند بدء التطبيق
+        if (state is NotesInitial) {
+          context.read<NotesCubit>().fetchAllNotes();
+        }
+
+        // التحقق من حالة البيانات
+        if (state is NotesSuccess) {
+          final notes = context.read<NotesCubit>().notes ??
+              []; // جلب الملاحظات من الـCubit
+          if (notes.isEmpty) {
+            return Center(child: Text('No notes available'));
+          }
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: ListView.builder(
+              itemCount: notes.length,
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4),
+                  child: NoteItem(
+                    note: notes[index],
+                  ),
+                );
+              },
+            ),
+          );
+        }
+
+        // عرض مؤشر التحميل عند جلب البيانات
+        return Center(child: CircularProgressIndicator());
       },
     );
   }
