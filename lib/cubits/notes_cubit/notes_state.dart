@@ -16,5 +16,5 @@ final class NotesSuccess extends NotesState {
 final class NotesFailure extends NotesState {
   final String errorMessage;
 
-  NotesFailure({required this.errorMessage});
+  NotesFailure( this.errorMessage);
 }
