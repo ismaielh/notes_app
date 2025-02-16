@@ -1,9 +1,13 @@
 part of 'notes_cubit.dart';
 
-// تعريف الحالات بشكل غير قابل للتغيير (immutable)
 @immutable
 sealed class NotesState {}
 
-// الحالة الأولى عند بدء التطبيق
 final class NotesInitial extends NotesState {}
-final class NotesSuccess extends NotesState{}
+
+// حالة النجاح عند جلب الملاحظات
+final class NotesSuccess extends NotesState {
+  final List<NoteModel> notes;
+
+  NotesSuccess(this.notes);
+}

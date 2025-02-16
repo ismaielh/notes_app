@@ -4,22 +4,28 @@ import 'package:notes_app/cubits/notes_cubit/notes_cubit.dart';
 import 'package:notes_app/models/note_model.dart';
 import 'package:notes_app/views/widgets/custom_note_item.dart';
 
-class NotesListView extends StatelessWidget {
+class NotesListView extends StatefulWidget {
   const NotesListView({super.key});
+
+  @override
+  _NotesListViewState createState() => _NotesListViewState();
+}
+
+class _NotesListViewState extends State<NotesListView> {
+  @override
+  void initState() {
+    super.initState();
+    // استدعاء fetchAllNotes عند بدء التطبيق
+    context.read<NotesCubit>().fetchAllNotes();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NotesCubit, NotesState>(
       builder: (context, state) {
-        // استدعاء fetchAllNotes عند بدء التطبيق
-        if (state is NotesInitial) {
-          context.read<NotesCubit>().fetchAllNotes();
-        }
-
         // التحقق من حالة البيانات
         if (state is NotesSuccess) {
-          final notes = context.read<NotesCubit>().notes ??
-              []; // جلب الملاحظات من الـCubit
+          final notes = state.notes; // جلب الملاحظات من الحالة
           if (notes.isEmpty) {
             return Center(child: Text('No notes available'));
           }
@@ -40,7 +46,7 @@ class NotesListView extends StatelessWidget {
           );
         }
 
-        // عرض مؤشر التحميل عند جلب البيانات
+        // عرض مؤشر التحميل عند جلب البيانات أو في حالة البيانات الأولية
         return Center(child: CircularProgressIndicator());
       },
     );

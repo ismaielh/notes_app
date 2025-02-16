@@ -13,12 +13,11 @@ class NotesCubit extends Cubit<NotesState> {
   List<NoteModel>? notes;
 
   // دالة لجلب جميع الملاحظات
-  fetchAllNotes() {
-    var notesBox =
-        Hive.box<NoteModel>(kNotesBox); // فتح الصندوق الذي يحتوي على الملاحظات
+  void fetchAllNotes() {
+    print("Fetching notes..."); // تصريح لتتبع العملية
+    var notesBox = Hive.box<NoteModel>(kNotesBox); // فتح الصندوق الذي يحتوي على الملاحظات
     notes = notesBox.values.toList(); // تحويل القيم في الصندوق إلى قائمة
-    emit(NotesSuccess()); // إعلام الواجهة بأن البيانات جاهزة
-    print(
-        "Notes fetched: ${notes?.length} notes"); // تصريح لعدد الملاحظات المجلوبة
+    emit(NotesSuccess(notes!)); // إعلام الواجهة بأن البيانات جاهزة
+    print("Notes fetched: ${notes?.length} notes"); // تصريح لعدد الملاحظات المجلوبة
   }
 }
